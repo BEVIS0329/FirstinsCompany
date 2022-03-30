@@ -1,0 +1,54 @@
+--開發一個功能是先從struts-config-->form-bean-->java-->jsp
+--開始操作前端功能是jsp-->form-bean-->java-->jsp
+
+JAVA:
+--redefineActionCode主要的用法是前端進去後是否先做甚麼事情。
+--例如畫面一進去有沒有要先抓系統日期、USERID然後直接放在畫面欄位
+public void redefineActionCode(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) {
+		AsiActionForm form1 = (AsiActionForm) form;
+		if (form1.getActionCode() == 0)
+			form1.setActionCode(GlobalKey.ACTION_SELECT);
+		return;
+	}
+-------------------------------------------------------------------------------------
+--這邊才是真正進入點，如果沒有想對畫面先做動作可以不用寫
+public void doProcess(ActionMapping mapping, AsiActionForm form, HttpServletRequest request, HttpServletResponse response) throws AsiException
+
+--因為這個方法是做查詢並放再LIST 所以public 後面是寫LIST 不是放void 
+public List selectData(String reqId) throws AsiException,SQLException
+
+--前端JSP輸入欄位後submit發送，放入form-bean送到java
+--doProcess這邊要做
+--form1.setNextPage(1);  其中的-1是停在原頁面不重整，1是停在同頁面重整傳入資料，2,3,4...就是根據struts-config設定
+
+--連線物件的寫法有兩種
+--1.
+try
+			{
+				***tx_controller.begin(1);***
+				String reqId2= (form1.getReqId());
+				selectData=selectData(reqId2);
+			}
+			catch (Throwable e)
+			{
+				e.printStackTrace();
+			}
+List<?> result1 = (List<?>) runner.query(***tx_controller.getConnection(1)***, sql.toString()...............................
+--2.
+			con = AS400Connection.getConnection();  (連AS400)
+			con = AS400Connection.getOracleConnection();  (連Oracle)
+			
+-----------------------------------------------------------------------------------------
+--當SQL組完會丟進List，然後會抽出其中的資料做處理，這些資料會是Map的型態
+-- 但資料出處完的Map依然會回丟進List，而不是獨立出來成為另一個Map
+--當Function做完return時是丟整個 List 出去，然後用另一個List 接
+--但要注意寫法，接Function 出來值的容器不能宣告在try、catch裡面
+--不然後面寫request.setAttribute("selectList", selectData); 會報錯  
+--try 、catch就單純做動作，宣告容器建議做在外面
+--------------------------------------------------------------------------------
+JSP:
+--1.<td> :  當後端送回LIST值時<td>如果沒有特別寫判斷，遇到null會讓畫面跳出  localhost:9080 顯示-目前資料處理中，不可再按任何鍵，
+--可能是再接值的時候遇到null，需注意，所以當要寫<td>時可以寫成 
+<td><%=map.get("PF24")== null ? "" : map.get("PF24").toString()%></td>
+--如果等於null	就放空值，不是就放本來的值。

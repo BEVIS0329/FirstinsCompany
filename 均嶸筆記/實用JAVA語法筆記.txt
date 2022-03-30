@@ -1,0 +1,124 @@
+VI006041K---板信要保書條碼取號作業
+
+修改前: String isB060 =(String)request.getAttribute("isB060");
+修改後: String isB060 =request.getAttribute("isB060") !=null ?  request.getAttribute("isB060").toString() : " " ;
+=========================================
+修改前:
+<%if("Y".equals(isB060)){ %>
+	<td nowrap align="right">
+		<asi:smartfield type="label" isNumber="true" round="<%=MathUtil.ROUND%>" scale="0" property="WT01"><%--超額保額--%>
+		</asi:smartfield>	
+	</td>
+<%} %>
+
+修改後: WT01為String，round="<%=MathUtil.ROUND%>"為數值類，不能用。 
+<%if("Y".equals(isB060)){ %>
+	<td nowrap align="center">
+		<asi:smartfield  type="label" property="WT01"><%--授權書編號--%>
+		</asi:smartfield>
+<%} %>	
+=========================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
